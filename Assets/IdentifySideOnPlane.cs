@@ -3,35 +3,35 @@ using UnityEngine;
 public class IdentifySideOnPlane : MonoBehaviour
 {
     [SerializeField] PlaneCreator[] planesCreator;
-    [SerializeField] Mesh _mesh;
-    [SerializeField] Vector3[] vertices;
-    GameObject myObject;
+    Mesh _mesh;
+    Vector3[] _vertices;
+    GameObject _myObject;
     Material _renderMat;
-    Vector3[] objectPosition;
-    private int Color1 = Shader.PropertyToID("_Color");
+    Vector3[] _objectPosition;
+    private int _color1 = Shader.PropertyToID("_Color");
 
     public void Start()
     {
-        myObject = this.gameObject;
-        _mesh = myObject.GetComponent<MeshFilter>().mesh;
-        objectPosition = new Vector3[_mesh.vertices.Length];
+        _myObject = gameObject;
+        _mesh = _myObject.GetComponent<MeshFilter>().mesh;
+        _objectPosition = new Vector3[_mesh.vertices.Length];
     }
 
     void Update()
     {
-        vertices = _mesh.vertices;
+        _vertices = _mesh.vertices;
         _renderMat = GetComponent<MeshRenderer>().material;
-        _mesh = myObject.GetComponent<MeshFilter>().mesh;
+        _mesh = _myObject.GetComponent<MeshFilter>().mesh;
 
-        for (var i = 0; i < vertices.Length; i++)
+        for (var i = 0; i < _vertices.Length; i++)
         {
-            objectPosition[i] = transform.TransformPoint(vertices[i]);
+            _objectPosition[i] = transform.TransformPoint(_vertices[i]);
         }
 
         foreach (var t in planesCreator)
         {
             int counter = 0;
-            foreach (var t1 in objectPosition)
+            foreach (var t1 in _objectPosition)
             {
                 if (!t.Plane.GetSide(t1))
                 {
@@ -41,10 +41,10 @@ public class IdentifySideOnPlane : MonoBehaviour
 
             if (counter >= _mesh.vertices.Length)
             {
-                _renderMat.SetColor(Color1, Color.red);
+                _renderMat.SetColor(_color1, Color.red);
                 break;
             }
-            _renderMat.SetColor(Color1, Color.green);
+            _renderMat.SetColor(_color1, Color.green);
         }
     }
 }
